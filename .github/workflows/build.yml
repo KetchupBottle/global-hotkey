@@ -1,0 +1,45 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      # The integration tests register real system hotkeys, synthesize key presses and launch
+      # programs. That needs an interactive desktop session the runner does not have, so they
+      # stay local and only the rest runs here.
+      - run: dotnet test --filter "Category!=Integration"
+
+  release:
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - run: >
+          dotnet publish src/GlobalHotKey/GlobalHotKey.csproj -c Release -r win-x64
+          --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
+          -o publish
+
+      # gh is preinstalled on the runner, so no third-party action is needed to make the release.
+      - run: gh release create "$env:GITHUB_REF_NAME" publish/GlobalHotKey.exe --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
