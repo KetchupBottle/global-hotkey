@@ -8,6 +8,8 @@ Windows .NET 10, WinForms. Ships as one portable `.exe` with no runtime to insta
 ## Using it
 
 Add a hotkey, click the shortcut box, press the combination you want, then pick what it opens.
+A URL can be typed bare: `github.com` is saved as `https://github.com`. A `.lnk` works as a program
+target, and the shortcut's own "Start in" and arguments are used, exactly as double-clicking it would.
 Closing the window hides it; the app keeps running in the notification area and the shortcuts stay
 live. The tray menu has **Open**, **Open hotkeys folder**, **Start with Windows** and **Exit**.
 

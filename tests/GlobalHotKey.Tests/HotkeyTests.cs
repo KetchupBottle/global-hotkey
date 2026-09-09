@@ -60,6 +60,27 @@ public class HotkeyTests
     public void A_url_must_be_absolute_and_not_a_file(string target) =>
         Assert.NotNull(Make(CtrlAlt, Keys.G, ActionType.Url, target).Validate());
 
+    [Theory]
+    [InlineData("github.com", "https://github.com")]
+    [InlineData("www.uol.com.br/noticias?x=1", "https://www.uol.com.br/noticias?x=1")]
+    public void A_bare_address_gets_https(string typed, string expected) =>
+        Assert.Equal(expected, Hotkey.NormalizeUrl(typed));
+
+    [Theory]
+    [InlineData("https://github.com")]
+    [InlineData("http://localhost")]
+    [InlineData("mailto:someone@example.com")]
+    [InlineData(@"C:\folder")]
+    [InlineData("")]
+    public void Anything_already_absolute_is_left_alone(string typed) =>
+        // C:\folder parses as a file URI, so it survives normalization and then fails Validate
+        // with a message about web addresses, instead of turning into https://C:\folder.
+        Assert.Equal(typed, Hotkey.NormalizeUrl(typed));
+
+    [Fact]
+    public void A_normalized_bare_address_then_validates() =>
+        Assert.Null(Make(CtrlAlt, Keys.G, ActionType.Url, Hotkey.NormalizeUrl("github.com")).Validate());
+
     [Fact]
     public void A_full_url_is_accepted() =>
         Assert.Null(Make(CtrlAlt, Keys.G, ActionType.Url, "https://github.com").Validate());

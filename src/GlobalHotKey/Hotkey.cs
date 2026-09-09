@@ -47,6 +47,15 @@ public sealed record Hotkey(HotkeyModifiers Modifiers, Keys Key, ActionType Acti
     };
 
     /// <summary>
+    /// Lets the user type "github.com" instead of the whole thing. Anything that already parses as an
+    /// absolute URI is left alone, so http, mailto and Windows paths keep their meaning.
+    /// </summary>
+    public static string NormalizeUrl(string target) =>
+        string.IsNullOrWhiteSpace(target) || Uri.TryCreate(target, UriKind.Absolute, out _)
+            ? target
+            : $"https://{target}";
+
+    /// <summary>
     /// Structural checks only. Deliberately does not touch the filesystem: an uninstalled program
     /// must not make its hotkey silently disappear from the config on load.
     /// </summary>
@@ -65,7 +74,7 @@ public sealed record Hotkey(HotkeyModifiers Modifiers, Keys Key, ActionType Acti
 
         if (Action == ActionType.Url &&
             (!Uri.TryCreate(Target, UriKind.Absolute, out var uri) || uri.Scheme == Uri.UriSchemeFile))
-            return "Enter a full URL, for example https://example.com.";
+            return "That does not look like a web address. Try something like example.com.";
 
         return null;
     }

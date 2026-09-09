@@ -148,7 +148,10 @@ internal sealed class EditHotkeyForm : Form
     void Confirm()
     {
         string? arguments = SelectedAction == ActionType.Program && _arguments.Text.Trim() is { Length: > 0 } text ? text : null;
-        var candidate = new Hotkey(_modifiers, _key, SelectedAction, _target.Text.Trim(), arguments);
+        string target = _target.Text.Trim();
+        if (SelectedAction == ActionType.Url) target = Hotkey.NormalizeUrl(target);
+
+        var candidate = new Hotkey(_modifiers, _key, SelectedAction, target, arguments);
 
         if (candidate.Validate() is { } invalid) { Warn(invalid); return; }
         if (MissingTarget(candidate) is { } missing) { Warn(missing); return; }
