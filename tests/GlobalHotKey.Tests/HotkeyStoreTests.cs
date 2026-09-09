@@ -28,6 +28,10 @@ public class HotkeyStoreTests
     }
 
     [Fact]
+    public void The_computed_display_text_stays_out_of_the_file() =>
+        Assert.DoesNotContain("displayText", HotkeyStore.Serialize(Sample));
+
+    [Fact]
     public void Null_arguments_are_left_out() =>
         Assert.DoesNotContain("\"arguments\": null", HotkeyStore.Serialize(Sample));
 

@@ -29,6 +29,7 @@ internal static class ActionRunner
     {
         try
         {
+            NativeMethods.LetTheLaunchedAppTakeFocus();
             Process.Start(info)?.Dispose();   // null when the shell hands the job to a running process
             return null;
         }

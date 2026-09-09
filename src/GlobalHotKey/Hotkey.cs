@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace GlobalHotKey;
 
 public enum ActionType { Program, Folder, Url }
@@ -23,6 +25,8 @@ public sealed record Hotkey(HotkeyModifiers Modifiers, Keys Key, ActionType Acti
         Keys.LWin, Keys.RWin
     ];
 
+    /// <summary>Computed for the UI. Without JsonIgnore it would be written into the config file.</summary>
+    [JsonIgnore]
     public string DisplayText => Describe(Modifiers, Key);
 
     internal static string Describe(HotkeyModifiers modifiers, Keys key) =>
