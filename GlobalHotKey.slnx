@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/GlobalHotKey/GlobalHotKey.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/GlobalHotKey.Tests/GlobalHotKey.Tests.csproj" />
+  </Folder>
+</Solution>

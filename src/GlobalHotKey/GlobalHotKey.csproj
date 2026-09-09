@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Same file twice: apphost icon for Explorer, embedded copy for Form.Icon/NotifyIcon
+         (a single-file publish has no app.ico sitting next to the exe). -->
+    <EmbeddedResource Include="app.ico" LogicalName="app.ico" />
+    <InternalsVisibleTo Include="GlobalHotKey.Tests" />
+  </ItemGroup>
+
+</Project>
