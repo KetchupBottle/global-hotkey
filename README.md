@@ -9,7 +9,7 @@ Windows .NET 10, WinForms. Ships as one portable `.exe` with no runtime to insta
 
 Add a hotkey, click the shortcut box, press the combination you want, then pick what it opens.
 Closing the window hides it; the app keeps running in the notification area and the shortcuts stay
-live. The tray menu has **Open**, **Start with Windows** and **Exit**.
+live. The tray menu has **Open**, **Open hotkeys folder**, **Start with Windows** and **Exit**.
 
 If nothing appears when you press a combination, another program already owns it. Windows tells the
 app when a registration is refused, and the list shows those rows as `Not registered`.
@@ -19,6 +19,7 @@ Only one instance runs at a time, since two would fight over the same registrati
 ## Configuration
 
 `%AppData%\GlobalHotKey\hotkeys.json`, written atomically so a crash mid-save cannot truncate it.
+**Open hotkeys folder** on the tray menu opens that folder in Explorer.
 
 ```json
 [

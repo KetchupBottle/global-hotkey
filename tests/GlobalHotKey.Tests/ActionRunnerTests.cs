@@ -19,6 +19,10 @@ public class ActionRunnerTests
     public void A_missing_folder_comes_back_as_a_message() =>
         Assert.NotNull(ActionRunner.Run(Action(ActionType.Folder, @"C:\does\not\exist\nope")));
 
+    [Fact]
+    public void Open_reports_a_folder_that_is_not_there() =>
+        Assert.NotNull(ActionRunner.Open(@"C:\does\not\exist\nope"));
+
     // The URL path has no launch test on purpose. It is the same ShellExecute call as the two above,
     // and there is no URL that fails without a side effect: a valid one opens the browser, and an
     // unregistered scheme makes Windows open the default-apps settings page instead of failing.

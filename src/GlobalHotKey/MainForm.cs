@@ -55,6 +55,7 @@ internal sealed class MainForm : Form
         menu.Items.AddRange(
         [
             new ToolStripMenuItem("Open", null, (_, _) => ShowWindow()),
+            new ToolStripMenuItem("Open hotkeys folder", null, (_, _) => OpenHotkeysFolder()),
             _startupItem,
             new ToolStripSeparator(),
             new ToolStripMenuItem("Exit", null, (_, _) => ExitApp())
@@ -182,6 +183,23 @@ internal sealed class MainForm : Form
         Show();
         WindowState = FormWindowState.Normal;
         Activate();
+    }
+
+    void OpenHotkeysFolder()
+    {
+        string folder = Path.GetDirectoryName(_store.FilePath)!;
+        try
+        {
+            // Nothing has been saved yet on a first run, so the folder may not exist.
+            Directory.CreateDirectory(folder);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            Notify($"Could not open {folder}: {ex.Message}", ToolTipIcon.Error);
+            return;
+        }
+
+        if (ActionRunner.Open(folder) is { } error) Notify(error, ToolTipIcon.Error);
     }
 
     void ToggleStartup()

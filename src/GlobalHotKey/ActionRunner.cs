@@ -19,6 +19,14 @@ internal static class ActionRunner
             if (Path.GetDirectoryName(hotkey.Target) is { Length: > 0 } directory) info.WorkingDirectory = directory;
         }
 
+        return Start(info);
+    }
+
+    /// <summary>Hands a path or URL to the shell with no extras. Returns null on success.</summary>
+    public static string? Open(string target) => Start(new ProcessStartInfo(target) { UseShellExecute = true });
+
+    static string? Start(ProcessStartInfo info)
+    {
         try
         {
             Process.Start(info)?.Dispose();   // null when the shell hands the job to a running process
@@ -26,7 +34,7 @@ internal static class ActionRunner
         }
         catch (Exception ex) when (ex is Win32Exception or FileNotFoundException or InvalidOperationException)
         {
-            return $"Could not open {hotkey.Target}: {ex.Message}";
+            return $"Could not open {info.FileName}: {ex.Message}";
         }
     }
 }
