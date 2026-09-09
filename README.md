@@ -77,6 +77,14 @@ dotnet run --file tools/MakeIcon.cs -- src/GlobalHotKey/app.ico <preview-dir>
 
 It also writes PNG previews and a contact sheet so the small sizes can be checked before committing.
 
+## Launching Electron programs
+
+On startup the app drops `ELECTRON_RUN_AS_NODE` and any `VSCODE_` variables from its own environment.
+Start it from a terminal inside VS Code and it inherits those; every program it launches would inherit
+them too, and an Electron program (VS Code, Discord, Slack, Obsidian) told to run as Node starts
+headless and exits without a window or an error. Dropping them is safe because they only ever describe
+the process that set them.
+
 ## Known limitation
 
 "Start with Windows" writes to `HKCU\...\CurrentVersion\Run`. If you later disable the app from the

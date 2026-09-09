@@ -8,6 +8,8 @@ static class Program
     [STAThread]
     static void Main(string[] args)
     {
+        DropInheritedElectronVariables();
+
         using var instance = new Mutex(initiallyOwned: true, InstanceMutexName, out bool isOnlyInstance);
         ApplicationConfiguration.Initialize();
 
@@ -23,5 +25,21 @@ static class Program
 
         // Run without a main form: closing the window only hides it, and Exit on the tray menu ends the app.
         Application.Run();
+    }
+
+    /// <summary>
+    /// A launcher must not hand its own quirks to the programs it opens. Starting this app from a
+    /// terminal inside an Electron editor leaves ELECTRON_RUN_AS_NODE=1 and a set of VSCODE_ variables
+    /// in the environment. Every child inherits them, so launching any Electron program from here would
+    /// run it headless as Node: no window, no error, nothing at all. Dropping them costs nothing,
+    /// because they only ever describe the process that set them.
+    /// </summary>
+    internal static void DropInheritedElectronVariables()
+    {
+        Environment.SetEnvironmentVariable("ELECTRON_RUN_AS_NODE", null);
+
+        foreach (string name in Environment.GetEnvironmentVariables().Keys.OfType<string>()
+                     .Where(name => name.StartsWith("VSCODE_", StringComparison.OrdinalIgnoreCase)))
+            Environment.SetEnvironmentVariable(name, null);
     }
 }
